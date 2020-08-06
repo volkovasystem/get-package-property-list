@@ -1,0 +1,40 @@
+{
+	"name": "@volkovasystem/get-package-property-list",
+	"version": "0.0.0",
+	"description": "Provide basic and extensible standard convention for npm package property list.",
+	"main": "get-package-property-list.js",
+	"scripts": {
+		"clean": "rm -rfv ./node_modules || true && rm -fv ./package-lock.json || true && npm cache clean --force",
+		"reset": "npm run clean && rm -rfv ./get-package-property-list.js || true && rm -rfv ./.build || true && rm -rfv ./.test || true",
+		"bundle": "npx parcel build ./*.module.js --no-cache --no-source-maps --no-minify --target node --out-dir ./.build --out-file ./get-package-property-list.js --global getPackagePropertyList && mv ./.build/get-package-property-list.js ./get-package-property-list.js && rm -rfv ./.build || true",
+		"compress": "npx terser ./get-package-property-list.js --compress --output ./get-package-property-list.js",
+		"build": "npm run bundle && npm run compress",
+		"test": "node ./get-package-property-list.test.js",
+		"stage": "npm run reset && npm install && npm run build && npm test && npm run clean",
+		"prepublishOnly": "npm run stage",
+		"get-package-property-list": "node ./get-package-property-list.run.js"
+	},
+	"bin": {
+		"get-package-property-list": "get-package-property-list.run.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/volkovasystem/get-package-property-list.git"
+	},
+	"keywords": [
+		"get-package-property-list",
+		"get",
+		"package",
+		"property",
+		"list"
+	],
+	"author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+	"contributors": [
+		"Richeve S. Bebedor <richeve.bebedor@gmail.com>"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/volkovasystem/get-package-property-list/issues"
+	},
+	"homepage": "https://github.com/volkovasystem/get-package-property-list#readme"
+}
