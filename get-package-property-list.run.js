@@ -1,16 +1,16 @@
 #! /usr/bin/env node
 
-const PROPERTY_LIST_SHELL_PARAMETER = (
-	"--propertyList"
-);
-
-const PROPERTY_LIST_URI_PATH_SHELL_PARAMETER = (
-	"--propertyListURIPath"
-);
-
 (
 	async	function runGetPackagePropertyList( shellParameterList ){
 				"use strict";
+
+				const PROPERTY_LIST_SHELL_PARAMETER = (
+					"--propertyList"
+				);
+
+				const PROPERTY_LIST_SOURCE_PATH_SHELL_PARAMETER = (
+					"--propertyListSourcePath"
+				);
 
 				const getPackagePropertyList = (
 					require( "./get-package-property-list.js" )
@@ -45,7 +45,7 @@ const PROPERTY_LIST_URI_PATH_SHELL_PARAMETER = (
 							)
 							.split(
 								(
-									/[\,\s\t\n\r]+/gm
+									/[\,][\s\t\n\r]+/gm
 								)
 							)
 						)
@@ -54,13 +54,13 @@ const PROPERTY_LIST_URI_PATH_SHELL_PARAMETER = (
 						)
 				);
 
-				const propertyListURIPath = (
+				const propertyListSourcePath = (
 						(
 								(
 										shellParameterList
 										.includes(
 											(
-												PROPERTY_LIST_URI_PATH_SHELL_PARAMETER
+												PROPERTY_LIST_SOURCE_PATH_SHELL_PARAMETER
 											)
 										)
 									===	true
@@ -73,7 +73,7 @@ const PROPERTY_LIST_URI_PATH_SHELL_PARAMETER = (
 										shellParameterList
 										.indexOf(
 											(
-												PROPERTY_LIST_URI_PATH_SHELL_PARAMETER
+												PROPERTY_LIST_SOURCE_PATH_SHELL_PARAMETER
 											)
 										)
 									)+1
@@ -94,8 +94,8 @@ const PROPERTY_LIST_URI_PATH_SHELL_PARAMETER = (
 														propertyList
 													),
 
-													"propertyListURIPath": (
-														propertyListURIPath
+													"propertyListSourcePath": (
+														propertyListSourcePath
 													)
 												}
 											)
