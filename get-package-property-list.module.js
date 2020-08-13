@@ -54,8 +54,8 @@ const PROPERTY_NAMESPACE_PATTERN = (
 	/^[a-zA-Z0-9]+$/
 );
 
-const httpsGet = (
-	function httpsGet( ){
+const requestGetSource = (
+	function requestGetSource( ){
 		const parameterList = (
 			Array
 			.from(
@@ -156,11 +156,68 @@ const httpsGet = (
 	}
 );
 
+const getSourcePropertyList = (
+	async	function getSourcePropertyList( propertyListSourcePath ){
+				const sourceResult = (
+					await	requestGetSource(
+								(
+									propertyListSourcePath
+								),
+
+								(
+									{
+										"headers": {
+											"Content-Type": (
+												[
+													"text/plain",
+													"charset=utf-8"
+												]
+												.join(
+													(
+														";"
+													)
+												)
+											)
+										}
+									}
+								)
+							)
+				);
+
+				const sourcePropertyList = (
+					sourceResult
+					.trim( )
+					.split(
+						(
+							/[\,][\s\t\n\r]+/gm
+						)
+					)
+					.filter(
+						(
+							( property ) => (
+									PROPERTY_NAMESPACE_PATTERN
+									.test(
+										(
+											property
+										)
+									)
+								===	true
+							)
+						)
+					)
+				);
+
+				return	(
+							sourcePropertyList
+						);
+			}
+);
+
 const getPackagePropertyList = (
 	async	function getPackagePropertyList( option ){
 				/*;
 					@procedure-definition:
-						Provide basic and extensible standard convention for npm package property list.
+						Provide basic and extensible standard convention for NPM package property list.
 					@end-procedure-definition
 
 					@parameter-definition:
@@ -179,7 +236,7 @@ const getPackagePropertyList = (
 													]
 												",
 
-												"propertyListURIPath": "
+												"propertyListSourcePath": "
 													[
 														@type:
 																string
@@ -202,7 +259,7 @@ const getPackagePropertyList = (
 							"result": "
 								[
 									@type:
-											string
+											object as Array of string
 									@end-type
 								]
 							"
@@ -247,10 +304,10 @@ const getPackagePropertyList = (
 							)
 					);
 
-					const propertyListURIPath = (
+					const propertyListSourcePath = (
 							(
 								option
-								.propertyListURIPath
+								.propertyListSourcePath
 							)
 
 						||	(
@@ -261,63 +318,23 @@ const getPackagePropertyList = (
 					if(
 							(
 									typeof
-									propertyListURIPath
+									propertyListSourcePath
 								==	"string"
 							)
 
 						&&	(
-									propertyListURIPath
+									propertyListSourcePath
 									.length
 								>	0
 							)
 					){
 						return	(
-									(
-										await	httpsGet(
-													(
-														propertyListURIPath
-													),
-
-													(
-														{
-															"headers": {
-																"Content-Type": (
-																	[
-																		"text/plain",
-																		"charset=utf-8"
-																	]
-																	.join(
-																		(
-																			";"
-																		)
-																	)
-																)
-															}
-														}
-													)
+									await	getSourcePropertyList(
+												(
+													propertyListSourcePath
 												)
-									)
-									.trim( )
-									.split(
-										(
-											/[\,\s\t\n\r]+/gm
-										)
-									)
-									.filter(
-										(
-											( property ) => (
-													PROPERTY_NAMESPACE_PATTERN
-													.test(
-														(
-															property
-														)
-													)
-												===	true
 											)
-										)
-									)
 								);
-
 					}
 					else if(
 							(
