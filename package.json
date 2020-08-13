@@ -1,6 +1,6 @@
 {
 	"name": "@volkovasystem/get-package-property-list",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Provide basic and extensible standard convention for NPM package property list.",
 	"main": "get-package-property-list.js",
 	"scripts": {
