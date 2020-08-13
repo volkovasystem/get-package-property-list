@@ -8,23 +8,9 @@ const strictAssert = (
 	.strict
 );
 
-const getPackagePropertyList = (
-	require( "./get-package-property-list.js" )
-);
-
 const executeShellCommand = (
 	async	function executeShellCommand( shellCommand, moduleDirectoryPath ){
 				const childProcess = require( "child_process" );
-
-				const executeAsync = (
-					util
-					.promisify(
-						(
-							childProcess
-							.exec
-						)
-					)
-				);
 
 				try{
 					const	{
@@ -32,14 +18,20 @@ const executeShellCommand = (
 								stderr
 							}
 						=	(
-								await	executeAsync(
+								await	util
+										.promisify(
+											(
+												childProcess
+												.exec
+											)
+										)(
 											(
 												shellCommand
 											),
 
 											(
 												{
-													"moduleDirectoryPath": (
+													"cwd": (
 															(
 																moduleDirectoryPath
 															)
@@ -85,8 +77,54 @@ const executeShellCommand = (
 			}
 );
 
-const TEST_SETUP_DIRECTORY = (
-	async	function TEST_SETUP_DIRECTORY( ){
+const SETUP_TEST_DIRECTORY = (
+	async	function SETUP_TEST_DIRECTORY( ){
+				const shellParameterList = (
+					process
+					.argv
+				);
+
+				const DISABLE_SETUP_TEST_DIRECTORY_SHELL_PARAMETER = (
+					"--disableSetupTestDirectory"
+				);
+
+				const DISABLE_SETUP_TEST_DIRECTORY_SHORT_SHELL_PARAMETER = (
+					"--xstd"
+				);
+
+				const disableSetupTestDirectory = (
+						(
+								shellParameterList
+								.includes(
+									(
+										DISABLE_SETUP_TEST_DIRECTORY_SHELL_PARAMETER
+									)
+								)
+							===	true
+						)
+
+					||	(
+								shellParameterList
+								.includes(
+									(
+										DISABLE_SETUP_TEST_DIRECTORY_SHORT_SHELL_PARAMETER
+									)
+								)
+							===	true
+						)
+				);
+
+				if(
+						(
+								disableSetupTestDirectory
+							===	true
+						)
+				){
+					return	(
+								true
+							);
+				}
+
 				return	(
 							await	executeShellCommand(
 										(
@@ -97,8 +135,54 @@ const TEST_SETUP_DIRECTORY = (
 			}
 );
 
-const TEST_CLEANUP_DIRECTORY = (
-	async	function TEST_CLEANUP_DIRECTORY( ){
+const CLEAN_TEST_DIRECTORY = (
+	async	function CLEAN_TEST_DIRECTORY( ){
+				const shellParameterList = (
+					process
+					.argv
+				);
+
+				const DISABLE_CLEAN_TEST_DIRECTORY_SHELL_PARAMETER = (
+					"--disableCleanTestDirectory"
+				);
+
+				const DISABLE_CLEAN_TEST_DIRECTORY_SHORT_SHELL_PARAMETER = (
+					"--xctd"
+				);
+
+				const disableCleanTestDirectory = (
+						(
+								shellParameterList
+								.includes(
+									(
+										DISABLE_CLEAN_TEST_DIRECTORY_SHELL_PARAMETER
+									)
+								)
+							===	true
+						)
+
+					||	(
+								shellParameterList
+								.includes(
+									(
+										DISABLE_CLEAN_TEST_DIRECTORY_SHORT_SHELL_PARAMETER
+									)
+								)
+							===	true
+						)
+				);
+
+				if(
+						(
+								disableCleanTestDirectory
+							===	true
+						)
+				){
+					return	(
+								true
+							);
+				}
+
 				return	(
 							await	executeShellCommand(
 										(
@@ -109,14 +193,18 @@ const TEST_CLEANUP_DIRECTORY = (
 			}
 );
 
+const getPackagePropertyList = (
+	require( "./get-package-property-list.js" )
+);
+
 const TEST_GET_PACKAGE_PROPERTY_LIST = (
 	async	function TEST_SAMPLE_UNIT( ){
 				(
-					await	TEST_CLEANUP_DIRECTORY( )
+					await	CLEAN_TEST_DIRECTORY( )
 				);
 
 				(
-					await	TEST_SETUP_DIRECTORY( )
+					await	SETUP_TEST_DIRECTORY( )
 				);
 
 				try{
@@ -172,6 +260,7 @@ const TEST_GET_PACKAGE_PROPERTY_LIST = (
 
 								"test get package property list;",
 								"must return an object as Array of string;",
+
 								`must assert to ${ testValue };`
 							]
 						)
@@ -195,20 +284,20 @@ const TEST_GET_PACKAGE_PROPERTY_LIST = (
 				}
 				finally{
 					(
-						await	TEST_CLEANUP_DIRECTORY( )
+						await	CLEAN_TEST_DIRECTORY( )
 					);
 				}
 			}
 );
 
-const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
+const TEST_GET_PACKAGE_PROPERTY_LIST_SOURCE_PATH = (
 	async	function TEST_SAMPLE_UNIT( ){
 				(
-					await	TEST_CLEANUP_DIRECTORY( )
+					await	CLEAN_TEST_DIRECTORY( )
 				);
 
 				(
-					await	TEST_SETUP_DIRECTORY( )
+					await	SETUP_TEST_DIRECTORY( )
 				);
 
 				try{
@@ -216,7 +305,7 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 						await	getPackagePropertyList(
 									(
 										{
-											"propertyListURIPath": (
+											"propertyListSourcePath": (
 												"https://raw.githubusercontent.com/volkovasystem/test-get-package-property-list/master/test-package-property-list.txt"
 											)
 										}
@@ -269,10 +358,11 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 
 						(
 							[
-								"#test-get-package-property-list-uri-path;",
+								"#test-get-package-property-list-source-path;",
 
-								"test get package property list uri path;",
+								"test get package property list source path;",
 								`must return package property list, ${ testPackagePropertyList };`,
+
 								`must assert to ${ testValue };`
 							]
 						)
@@ -296,7 +386,7 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 				}
 				finally{
 					(
-						await	TEST_CLEANUP_DIRECTORY( )
+						await	CLEAN_TEST_DIRECTORY( )
 					);
 				}
 			}
@@ -305,7 +395,7 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 (
 	async	function TEST_SCENE_BASIC( ){
 				(
-					await	TEST_CLEANUP_DIRECTORY( )
+					await	CLEAN_TEST_DIRECTORY( )
 				);
 
 				console
@@ -324,11 +414,11 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 
 							{
 								"test": (
-									"test get package property list uri path"
+									"test get package property list source path"
 								),
 
 								"result": (
-									await	TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH( )
+									await	TEST_GET_PACKAGE_PROPERTY_LIST_SOURCE_PATH( )
 								)
 							}
 						]
@@ -336,7 +426,7 @@ const TEST_GET_PACKAGE_PROPERTY_LIST_URI_PATH = (
 				);
 
 				(
-					await	TEST_CLEANUP_DIRECTORY( )
+					await	CLEAN_TEST_DIRECTORY( )
 				);
 			}
 )( );
